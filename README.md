@@ -1,7 +1,6 @@
 # IL DENTE PROIBITO — Web Presence Experience
 
 <div align="center">
-  <img src="https://img.shields.io/badge/HTML-CSS-JS-0f172a?style=for-the-badge&logo=html5&logoColor=white" alt="Tech stack" />
   <img src="https://img.shields.io/badge/Single%20Page-Static%20Site-111827?style=for-the-badge&logo=vercel&logoColor=white" alt="Static site" />
   <img src="https://img.shields.io/badge/Presence-Lanyard-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Lanyard" />
   <img src="https://img.shields.io/badge/Interactions-Animated-4ee3ff?style=for-the-badge&logo=visualstudiocode&logoColor=black" alt="Animated interactions" />
