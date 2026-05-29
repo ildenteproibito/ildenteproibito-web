@@ -1,0 +1,2187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IL DENTE PROIBITO</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <style>
+        /* --- General Reset & Styling --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            overflow: hidden;
+            background-color: #020812;
+        }
+
+        /* --- Background Media --- */
+        .bg-media {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: 1;
+            transform: translateZ(0);
+            will-change: transform;
+            image-rendering: auto; 
+        }
+
+        /* --- Click to Enter Overlay --- */
+        .enter-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 100;
+            background: rgba(12, 12, 12, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .enter-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .enter-text {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+            animation: pulse 2s ease-in-out infinite;
+            user-select: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        /* --- Top Right Volume Control --- */
+        .volume-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            background: rgba(3, 13, 24, 0.6);
+            padding: 8px 12px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(137, 223, 255, 0.14);
+            gap: 8px;
+            transition: opacity 0.3s ease;
+        }
+
+        .volume-icon {
+            width: 16px;
+            height: 16px;
+            background-color: #fff;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M301.1 34.8C312.6 40 320 51.4 320 64V448c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352H64c-35.3 0-64-28.7-64-64V224c0-35.3 28.7-64 64-64h67.8L267.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3zM425 167c9.4 9.4 9.4 24.6 0 33.9c-17.7 17.7-17.7 46.3 0 64c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0c-36.4-36.4-36.4-95.5 0-131.9c9.4-9.4 24.6-9.4 33.9 0z"/></svg>') no-repeat center / contain;
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M301.1 34.8C312.6 40 320 51.4 320 64V448c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352H64c-35.3 0-64-28.7-64-64V224c0-35.3 28.7-64 64-64h67.8L267.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3zM425 167c9.4 9.4 9.4 24.6 0 33.9c-17.7 17.7-17.7 46.3 0 64c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0c-36.4-36.4-36.4-95.5 0-131.9c9.4-9.4 24.6-9.4 33.9 0z"/></svg>') no-repeat center / contain;
+        }
+
+        .volume-icon.muted {
+            opacity: 0.4;
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 70px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4ee3ff;
+            cursor: pointer;
+        }
+
+        /* --- The Blurred Square (Glassmorphism Layer) --- */
+        .blur-card {
+            position: relative;
+            z-index: 2;
+            background: rgba(3, 13, 24, 0.58); 
+            backdrop-filter: blur(20px) saturate(1.2); 
+            -webkit-backdrop-filter: blur(20px) saturate(1.2);
+            transform: translateZ(0); 
+            contain: paint; 
+
+            padding: 40px 45px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(137, 223, 255, 0.16);
+            box-shadow: 0 12px 40px 0 rgba(0, 10, 28, 0.72);
+            max-width: 420px;
+            width: 90%;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        /* --- Avatar Styling --- */
+        .avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border: 2px solid rgba(188, 241, 255, 0.72);
+            box-shadow: 0 0 24px rgba(78, 227, 255, 0.36), 0 0 40px rgba(22, 85, 255, 0.26);
+        }
+
+        /* --- PFP Upload Wrapper --- */
+        .avatar-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .discord-status-ring {
+            position: absolute;
+            right: 4px;
+            bottom: 4px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #020812;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 0 3px rgba(3, 13, 24, 0.9);
+            pointer-events: none;
+        }
+
+        .discord-status-ring::after {
+            content: '';
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #80848e;
+        }
+
+        .discord-status-ring.online::after  { background: #23a55a; }
+        .discord-status-ring.idle::after   { background: #f0b232; }
+        .discord-status-ring.dnd::after    { background: #f23f43; }
+        .discord-status-ring.offline::after{ background: #80848e; }
+
+        .avatar-wrapper .avatar {
+            margin-bottom: 0;
+            display: block;
+            transition: filter 0.2s ease;
+        }
+
+        .avatar-wrapper:not(.locked):hover .avatar {
+            filter: brightness(0.55);
+        }
+
+        .avatar-upload-hint {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #fff;
+        }
+
+        .avatar-upload-hint svg {
+            width: 22px;
+            height: 22px;
+            fill: #fff;
+        }
+
+        .avatar-wrapper:not(.locked):hover .avatar-upload-hint {
+            opacity: 1;
+        }
+
+        #pfpInput {
+            display: none;
+        }
+
+        /* --- Cropper Modal --- */
+        .crop-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(2, 8, 18, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 24px;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .crop-modal.hidden {
+            display: none;
+        }
+
+        .crop-title {
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #bcf1ff;
+            text-shadow: 0 0 12px rgba(78, 227, 255, 0.4);
+        }
+
+        .crop-canvas-wrap {
+            position: relative;
+            width: min(320px, 80vw);
+            height: min(320px, 80vw);
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid rgba(188, 241, 255, 0.55);
+            box-shadow: 0 0 28px rgba(78, 227, 255, 0.3), 0 0 50px rgba(22, 85, 255, 0.2);
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+        }
+
+        .crop-canvas-wrap:active { cursor: grabbing; }
+
+        #cropCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .crop-hint {
+            font-size: 12px;
+            color: rgba(195, 222, 244, 0.7);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .crop-zoom-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: min(320px, 80vw);
+        }
+
+        .crop-zoom-label {
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .crop-zoom-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            outline: none;
+        }
+
+        .crop-zoom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4ee3ff;
+            cursor: pointer;
+        }
+
+        .crop-zoom-slider::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            border: 0;
+            border-radius: 50%;
+            background: #4ee3ff;
+            cursor: pointer;
+        }
+
+        .crop-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .crop-btn {
+            padding: 10px 26px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.15s ease, opacity 0.15s ease;
+        }
+
+        .crop-btn:hover { transform: scale(1.04); }
+        .crop-btn:active { transform: scale(0.97); }
+
+        .crop-btn-confirm {
+            background: linear-gradient(135deg, #4ee3ff, #1a7fff);
+            color: #020812;
+        }
+
+        .crop-btn-cancel {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.7);
+        }
+
+        .username {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .bio {
+            font-size: 14px;
+            color: #c3def4;
+            margin-bottom: 24px;
+            line-height: 1.4;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        /* --- Live unique visitors --- */
+        .visitor-live {
+            background: rgba(10, 20, 36, 0.72);
+            border: 1px solid rgba(78, 227, 255, 0.18);
+            border-radius: 12px;
+            padding: 14px 15px;
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: left;
+            animation: fadeIn 0.5s ease both;
+        }
+
+        .visitor-live-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: rgba(78, 227, 255, 0.1);
+            border: 1px solid rgba(78, 227, 255, 0.22);
+            color: #4ee3ff;
+        }
+
+        .visitor-live-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+            display: block;
+        }
+
+        .visitor-live-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .visitor-live-kicker {
+            font-size: 9.5px;
+            font-weight: 700;
+            letter-spacing: 0.9px;
+            text-transform: uppercase;
+            color: #4ee3ff;
+            margin-bottom: 3px;
+        }
+
+        .visitor-live-count {
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .visitor-live-count.count-bump {
+            animation: visitorBump 0.45s ease;
+        }
+
+        @keyframes visitorBump {
+            0%   { transform: scale(1); color: #ffffff; }
+            40%  { transform: scale(1.08); color: #4ee3ff; }
+            100% { transform: scale(1); color: #ffffff; }
+        }
+
+        .visitor-live-sub {
+            margin-top: 3px;
+            font-size: 11px;
+            color: rgba(195, 222, 244, 0.72);
+            line-height: 1.35;
+        }
+
+        .visitor-live-badge {
+            flex-shrink: 0;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            color: #020812;
+            background: linear-gradient(135deg, #4ee3ff, #bafede);
+            padding: 5px 8px;
+            border-radius: 999px;
+        }
+
+        .visitor-live.offline {
+            border-color: rgba(128, 132, 142, 0.25);
+        }
+
+        .visitor-live.offline .visitor-live-badge {
+            background: rgba(128, 132, 142, 0.2);
+            color: rgba(195, 222, 244, 0.75);
+        }
+
+        /* --- Integrated Music Player (Glassmorphism) --- */
+        .music-player {
+            background: linear-gradient(180deg, rgba(0, 79, 42, 0.95), rgba(0, 62, 34, 0.96));
+            border: 1px solid rgba(127, 255, 196, 0.18);
+            border-radius: 12px;
+            padding: 24px;
+            display: grid;
+            gap: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+        }
+
+        .music-brand {
+            display: flex;
+            justify-content: flex-end;
+            color: #ffffff;
+        }
+
+        .music-brand svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .music-cover {
+            width: min(138px, 48vw);
+            aspect-ratio: 1;
+            border-radius: 8px;
+            object-fit: cover;
+            justify-self: center;
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.32);
+        }
+
+        .music-info {
+            min-height: 4.6rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .music-title {
+            color: #ffffff;
+            font-size: clamp(20px, 6vw, 25px);
+            font-weight: 800;
+            line-height: 1.12;
+            text-align: left;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            word-break: break-word;
+        }
+
+        .music-meta {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .music-tag {
+            flex-shrink: 0;
+            color: #003d22;
+            background: #ffffff;
+            border-radius: 3px;
+            padding: 2px 5px;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        .music-artist {
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .music-progress-row {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.78);
+            font-size: 12px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .music-progress {
+            --progress: 0%;
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 5px;
+            border-radius: 999px;
+            background:
+                linear-gradient(90deg, #ffffff, #bafede) 0 / var(--progress) 100% no-repeat,
+                rgba(255, 255, 255, 0.25);
+            cursor: pointer;
+            outline: none;
+        }
+
+        .music-progress::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.14);
+        }
+
+        .music-progress::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            border: 0;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.14);
+        }
+
+        .track-info-block {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .track-thumb {
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            object-fit: cover;
+            background-color: #111;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .track-text-details {
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .track-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            line-height: 1.2;
+        }
+
+        .time-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 2px;
+        }
+
+        .progress-bar-container {
+            width: 80px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .progress-current {
+            width: 0%;
+            height: 100%;
+            background: #ffffff;
+            border-radius: 2px;
+        }
+
+        /* --- Apple Music Inspired Clean Controls --- */
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding-left: 10px;
+            flex-shrink: 0;
+        }
+
+        .control-btn {
+            background-color: #ffffff;
+            cursor: pointer;
+            opacity: 0.85;
+            transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.15s ease;
+        }
+
+        .control-btn:hover {
+            transform: scale(1.12);
+            opacity: 1;
+        }
+
+        /* Minimal clean vectors (No chunky edge walls) */
+        .btn-prev {
+            width: 20px;
+            height: 16px;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 19.5l-7.5-7.5 7.5-7.5v15zm9 0l-7.5-7.5 7.5-7.5v15z"/></svg>') no-repeat center / contain;
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 19.5l-7.5-7.5 7.5-7.5v15zm9 0l-7.5-7.5 7.5-7.5v15z"/></svg>') no-repeat center / contain;
+        }
+
+        .btn-play {
+            width: 18px;
+            height: 18px;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>') no-repeat center / contain;
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>') no-repeat center / contain;
+        }
+
+        .btn-pause {
+            width: 18px;
+            height: 18px;
+            display: none;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>') no-repeat center / contain;
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>') no-repeat center / contain;
+        }
+
+        .btn-next {
+            width: 20px;
+            height: 16px;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 4.5l7.5 7.5-7.5 7.5v-15zm-9 0l7.5 7.5-7.5 7.5v-15z"/></svg>') no-repeat center / contain;
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 4.5l7.5 7.5-7.5 7.5v-15zm-9 0l7.5 7.5-7.5 7.5v-15z"/></svg>') no-repeat center / contain;
+        }
+
+        /* --- Social Links Container --- */
+        .social-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .social-link {
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            opacity: 0.7;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease;
+        }
+
+        .social-link:hover {
+            transform: scale(1.18);
+            opacity: 1;
+        }
+
+        .social-link svg {
+            width: 26px;
+            height: 26px;
+            display: block;
+        }
+
+        @media (max-width: 430px) {
+            .music-player {
+                padding: 22px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Custom Cursor --- */
+        *, *::before, *::after { cursor: none !important; }
+
+        .cursor-dot {
+            position: fixed;
+            top: 0; left: 0;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #4ee3ff;
+            box-shadow: 0 0 8px rgba(78, 227, 255, 0.9), 0 0 16px rgba(78, 227, 255, 0.4);
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.15s ease, height 0.15s ease, background 0.15s ease, opacity 0.2s ease;
+            will-change: transform;
+        }
+
+        .cursor-ring {
+            position: fixed;
+            top: 0; left: 0;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(78, 227, 255, 0.55);
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+            will-change: transform;
+        }
+
+        body.cursor-hover .cursor-dot {
+            width: 12px; height: 12px;
+            background: #ffffff;
+            box-shadow: 0 0 12px rgba(255,255,255,0.8);
+        }
+
+        body.cursor-hover .cursor-ring {
+            width: 44px; height: 44px;
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        body.cursor-clicking .cursor-dot {
+            width: 6px; height: 6px;
+        }
+
+        body.cursor-clicking .cursor-ring {
+            width: 24px; height: 24px;
+        }
+
+        /* --- Typing effect --- */
+        .username { min-height: 1.2em; }
+        .bio      { min-height: 1.4em; }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background: #4ee3ff;
+            margin-left: 2px;
+            vertical-align: middle;
+            border-radius: 1px;
+            animation: blink 0.9s step-end infinite;
+            box-shadow: 0 0 6px rgba(78, 227, 255, 0.7);
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0; }
+        }
+
+        /* --- Tooltip --- */
+        .social-link {
+            position: relative;
+        }
+
+        .social-link::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            background: rgba(3, 13, 24, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(78, 227, 255, 0.22);
+            color: #bcf1ff;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            padding: 5px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+        }
+
+        .social-link:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* --- No Select / No Drag --- */
+        * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+        img, video, svg, canvas {
+            pointer-events: none;
+        }
+        /* Re-enable pointer events only on interactive elements */
+        a, button, input, .avatar-wrapper, .volume-icon,
+        .crop-btn, .social-link, .control-btn {
+            pointer-events: auto;
+        }
+
+        /* --- Now Playing Card (Discord-style) --- */
+        .now-playing {
+            background: rgba(10, 20, 36, 0.72);
+            border: 1px solid rgba(88, 101, 242, 0.28);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            transition: border-color 0.2s ease;
+            animation: fadeIn 0.5s ease both;
+        }
+
+        .now-playing:hover { border-color: rgba(88, 101, 242, 0.5); }
+        .now-playing.hidden { display: none; }
+
+        .np-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #23a55a;
+            box-shadow: 0 0 0 0 rgba(35, 165, 90, 0.6);
+            flex-shrink: 0;
+            animation: npPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes npPulse {
+            0%   { box-shadow: 0 0 0 0   rgba(35,165,90,0.55); }
+            60%  { box-shadow: 0 0 0 6px rgba(35,165,90,0);    }
+            100% { box-shadow: 0 0 0 0   rgba(35,165,90,0);    }
+        }
+
+        .np-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            background: rgba(88,101,242,0.18);
+            border: 1px solid rgba(88,101,242,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .np-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 7px;
+            pointer-events: none;
+        }
+
+        .np-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: rgba(88,101,242,0.85);
+            pointer-events: none;
+        }
+
+        .np-text {
+            flex: 1;
+            min-width: 0;
+            text-align: left;
+        }
+
+        .np-label {
+            font-size: 9.5px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: #23a55a;
+            margin-bottom: 3px;
+        }
+
+        .np-game {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .np-elapsed {
+            font-size: 10.5px;
+            color: rgba(195,222,244,0.55);
+            margin-top: 2px;
+        }
+
+        .np-edit-btn {
+            background: none;
+            border: none;
+            padding: 4px;
+            border-radius: 6px;
+            opacity: 0;
+            transition: opacity 0.15s ease, background 0.15s ease;
+            flex-shrink: 0;
+            pointer-events: auto;
+        }
+
+        .now-playing:hover .np-edit-btn { opacity: 1; }
+        .np-edit-btn:hover { background: rgba(255,255,255,0.08); }
+
+        .np-edit-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: rgba(195,222,244,0.65);
+            display: block;
+            pointer-events: none;
+        }
+
+        .now-playing.idle .np-dot   { background: #80848e; animation: none; box-shadow: none; }
+        .now-playing.idle .np-label { color: #80848e; }
+        .now-playing.idle .np-game  { color: rgba(255,255,255,0.45); font-style: italic; font-weight: 400; }
+
+        .now-playing.status-idle .np-dot   { background: #f0b232; box-shadow: 0 0 0 0 rgba(240,178,50,0.55); }
+        .now-playing.status-idle .np-label { color: #f0b232; }
+        .now-playing.status-dnd .np-dot    { background: #f23f43; box-shadow: 0 0 0 0 rgba(242,63,67,0.55); animation: none; }
+        .now-playing.status-dnd .np-label  { color: #f23f43; }
+        .now-playing.status-offline .np-dot{ background: #80848e; animation: none; box-shadow: none; }
+        .now-playing.status-offline .np-label { color: #80848e; }
+
+        .now-playing.spotify-theme {
+            border-color: rgba(30, 215, 96, 0.35);
+        }
+        .now-playing.spotify-theme:hover { border-color: rgba(30, 215, 96, 0.55); }
+        .now-playing.spotify-theme .np-label { color: #1ed760; }
+        .now-playing.spotify-theme .np-dot {
+            background: #1ed760;
+            box-shadow: 0 0 0 0 rgba(30, 215, 96, 0.55);
+        }
+
+        .np-sub {
+            font-size: 11px;
+            color: rgba(195,222,244,0.72);
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .np-game .np-emoji {
+            width: 16px;
+            height: 16px;
+            vertical-align: -3px;
+            margin-right: 4px;
+            display: inline-block;
+            pointer-events: none;
+        }
+
+        /* --- Now Playing Edit Modal --- */
+        .np-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 300;
+            background: rgba(2, 8, 18, 0.82);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .np-modal.hidden { display: none; }
+
+        .np-modal-box {
+            background: rgba(10, 20, 36, 0.95);
+            border: 1px solid rgba(88, 101, 242, 0.35);
+            border-radius: 14px;
+            padding: 28px 26px 24px;
+            width: min(360px, 92vw);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .np-modal-title {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            color: #bcf1ff;
+        }
+
+        .np-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .np-field label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: rgba(195,222,244,0.55);
+        }
+
+        .np-field input[type="text"] {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(88,101,242,0.3);
+            border-radius: 7px;
+            padding: 9px 12px;
+            color: #fff;
+            font-size: 13px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.15s ease;
+            width: 100%;
+            -webkit-user-select: text;
+            user-select: text;
+            pointer-events: auto;
+        }
+
+        .np-field input[type="text"]:focus { border-color: rgba(88,101,242,0.7); }
+        .np-field input[type="text"]::placeholder { color: rgba(255,255,255,0.2); }
+
+        .np-modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 4px;
+        }
+
+        .np-modal-btn {
+            padding: 9px 20px;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.12s ease, opacity 0.12s ease;
+            pointer-events: auto;
+        }
+
+        .np-modal-btn:hover  { transform: scale(1.03); }
+        .np-modal-btn:active { transform: scale(0.97); }
+
+        .np-modal-save   { background: linear-gradient(135deg, #5865f2, #4752c4); color: #fff; }
+        .np-modal-cancel { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.65); }
+        .np-modal-clear  { background: rgba(237,66,69,0.12); border: 1px solid rgba(237,66,69,0.25); color: #ed4245; margin-right: auto; }
+
+        /* --- Admin Login Modal --- */
+        .admin-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 400;
+            background: rgba(2, 8, 18, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .admin-modal.hidden { display: none; }
+
+        .admin-modal-box {
+            background: rgba(10, 20, 36, 0.97);
+            border: 1px solid rgba(78, 227, 255, 0.2);
+            border-radius: 14px;
+            padding: 28px 26px 24px;
+            width: min(320px, 92vw);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .admin-modal-box.shake {
+            animation: adminShake 0.38s ease;
+        }
+
+        @keyframes adminShake {
+            0%,100% { transform: translateX(0); }
+            20%     { transform: translateX(-8px); }
+            40%     { transform: translateX(8px); }
+            60%     { transform: translateX(-6px); }
+            80%     { transform: translateX(6px); }
+        }
+
+        .admin-modal-title {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #bcf1ff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-modal-title svg {
+            width: 14px; height: 14px;
+            fill: #4ee3ff;
+            pointer-events: none;
+        }
+
+        .admin-pw-wrap {
+            position: relative;
+        }
+
+        .admin-pw-wrap input[type="password"],
+        .admin-pw-wrap input[type="text"] {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(78,227,255,0.25);
+            border-radius: 7px;
+            padding: 10px 38px 10px 12px;
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            width: 100%;
+            transition: border-color 0.15s ease;
+            -webkit-user-select: text;
+            user-select: text;
+            pointer-events: auto;
+        }
+
+        .admin-pw-wrap input:focus { border-color: rgba(78,227,255,0.6); }
+
+        .admin-pw-wrap input.wrong { border-color: rgba(237,66,69,0.7) !important; }
+
+        .admin-pw-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            padding: 2px;
+            opacity: 0.4;
+            transition: opacity 0.15s;
+            pointer-events: auto;
+        }
+
+        .admin-pw-toggle:hover { opacity: 0.8; }
+
+        .admin-pw-toggle svg {
+            width: 16px; height: 16px;
+            fill: #fff;
+            display: block;
+            pointer-events: none;
+        }
+
+        .admin-error {
+            font-size: 11px;
+            color: #ed4245;
+            min-height: 14px;
+            margin-top: -8px;
+        }
+
+        .admin-modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .admin-btn {
+            padding: 9px 20px;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.12s ease;
+            pointer-events: auto;
+        }
+
+        .admin-btn:hover  { transform: scale(1.03); }
+        .admin-btn:active { transform: scale(0.97); }
+
+        .admin-btn-login  { background: linear-gradient(135deg, #4ee3ff, #1a7fff); color: #020812; }
+        .admin-btn-cancel { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.6); }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-dot"  id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <video class="bg-media" autoplay loop muted playsinline fetchpriority="high">
+        <source src="background.mp4" type="video/mp4">
+    </video>
+
+    <div class="enter-overlay" id="enterOverlay">
+        <div class="enter-text">Click to Enter</div>
+    </div>
+
+    <div class="volume-container" aria-label="Music volume">
+        <div class="volume-icon" id="volumeIcon" aria-hidden="true"></div>
+        <input type="range" class="volume-slider" id="globalVolume" min="0" max="1" step="0.05" value="0.45" aria-label="Volume">
+    </div>
+
+    <div class="blur-card">
+
+        <div class="avatar-wrapper" id="avatarWrapper" title="Cambia foto profilo">
+            <img class="avatar" id="avatarImg" src="profile-card.png" onerror="this.onerror=null; this.src='pfp.png';" alt="Avatar">
+            <div class="discord-status-ring offline" id="discordStatusRing" title="Discord status" aria-hidden="true"></div>
+            <div class="avatar-upload-hint">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0-2a2 2 0 1 1 0-4 2 2 0 0 1 0 4ZM9 2 7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3.17L15 2H9Z"/>
+                </svg>
+                <span>Cambia</span>
+            </div>
+            <input type="file" id="pfpInput" accept="image/*">
+        </div>
+
+        <h1 class="username">IL DENTE PROIBITO</h1>
+        <p class="bio">Junior Web Developer | Gamer | Platinum+ Optimizer Web Dev</p>
+
+        <!-- Visitatori unici (live) -->
+        <div class="visitor-live" id="visitorLive" aria-live="polite">
+            <div class="visitor-live-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3Zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3Zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13Zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5Z"/>
+                </svg>
+            </div>
+            <div class="visitor-live-body">
+                <div class="visitor-live-kicker">Visitatori unici</div>
+                <div class="visitor-live-count" id="visitorCount">—</div>
+                <div class="visitor-live-sub" id="visitorSub">Conteggio in tempo reale</div>
+            </div>
+            <div class="visitor-live-badge" id="visitorBadge">Live</div>
+        </div>
+
+        <!-- Discord presence (Lanyard) -->
+        <div class="now-playing idle status-offline" id="nowPlaying">
+            <span class="np-dot"></span>
+            <div class="np-icon" id="npIconWrap">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 6a1 1 0 0 0-1 1v2H4a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2h-2V7a1 1 0 0 0-1-1H7Zm0 2h10v6H7V8Zm-3 3h2v1H4v-1Zm13 0h2v1h-2v-1ZM9 9v2H7v1h2v2h1v-2h2v-1h-2V9H9Z"/>
+                </svg>
+            </div>
+            <div class="np-text">
+                <div class="np-label" id="npLabel">OFFLINE</div>
+                <div class="np-game"  id="npGame">Connessione a Discord…</div>
+                <div class="np-sub"   id="npSub"></div>
+                <div class="np-elapsed" id="npElapsed"></div>
+            </div>
+        </div>
+
+        <div class="music-player">
+            <div class="music-brand" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 1.75A10.25 10.25 0 1 0 12 22.25 10.25 10.25 0 0 0 12 1.75Zm4.7 14.78a.78.78 0 0 1-1.07.26c-2.93-1.79-6.6-2.2-10.94-1.2a.78.78 0 1 1-.35-1.52c4.75-1.08 8.84-.61 12.1 1.39.36.22.48.7.26 1.07Zm1.25-2.78a.97.97 0 0 1-1.33.32c-3.34-2.05-8.44-2.64-12.39-1.45a.97.97 0 0 1-.56-1.86c4.5-1.36 10.12-.7 13.96 1.66.46.28.6.87.32 1.33Zm.11-2.9c-4-2.38-10.62-2.6-14.45-1.44a1.16 1.16 0 1 1-.67-2.22c4.4-1.34 11.72-1.08 16.3 1.64a1.16 1.16 0 0 1-1.18 2.02Z"></path>
+                </svg>
+            </div>
+            <img class="music-cover" src="music.jpg" alt="FUNK UNIVERSO cover">
+            <div class="music-info">
+                <div class="music-title">FUNK UNIVERSO - Slowed</div>
+                <div class="music-meta">
+                    <span class="music-tag">PREVIEW</span>
+                    <span class="music-artist">rokz</span>
+                </div>
+            </div>
+            <div class="music-progress-row">
+                <span id="musicCurrent">0:00</span>
+                <input id="musicProgress" class="music-progress" type="range" min="0" max="100" value="0" aria-label="Song progress">
+                <span id="musicDuration">0:00</span>
+            </div>
+        </div>
+
+        <div class="social-links">
+            <a class="social-link" href="https://x.com/90Gattucio" target="_blank" rel="noopener noreferrer" aria-label="X" data-tooltip="X / Twitter">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M18.244 2H21l-6.55 7.49L22 22h-5.956l-4.66-6.102L6.04 22H3.28l7-7.997L2 2h6.108l4.212 5.562L18.244 2Zm-1.045 18h1.649L7.212 3.894H5.44L17.2 20Z"></path>
+                </svg>
+            </a>
+
+            <a class="social-link" href="https://t.me/+AKZO7Y5buhw0ZjRk" target="_blank" rel="noopener noreferrer" aria-label="Telegram" data-tooltip="Platinum+ Optimizer">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M21.944 4.667a1.5 1.5 0 0 0-1.933-1.8L3.291 9.09a1.5 1.5 0 0 0 .1 2.84l3.89 1.26 1.51 4.72a1.5 1.5 0 0 0 2.55.59l2.17-2.23 4.26 3.12a1.5 1.5 0 0 0 2.36-.89L21.944 4.667Zm-11.59 8.05-.67 3.12-.93-2.91 7.74-5.12-6.14 4.91Z"></path>
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- PFP Crop Modal -->
+    <div class="crop-modal hidden" id="cropModal">
+        <div class="crop-title">Ridimensiona la tua foto</div>
+        <div class="crop-canvas-wrap" id="cropWrap">
+            <canvas id="cropCanvas"></canvas>
+        </div>
+        <p class="crop-hint">Trascina per spostare &nbsp;·&nbsp; Scorri / pizzica per zoomare</p>
+        <div class="crop-zoom-row">
+            <span class="crop-zoom-label">Zoom</span>
+            <input type="range" class="crop-zoom-slider" id="cropZoom" min="1" max="4" step="0.01" value="1">
+        </div>
+        <div class="crop-actions">
+            <button class="crop-btn crop-btn-cancel" id="cropCancel">Annulla</button>
+            <button class="crop-btn crop-btn-confirm" id="cropConfirm">Conferma</button>
+        </div>
+    </div>
+
+    <audio id="backgroundAudio" src="music.mp3" preload="auto" loop></audio>
+
+    <script>
+        let hasEntered = false;
+        const enterOverlay = document.getElementById('enterOverlay');
+        const backgroundAudio = document.getElementById('backgroundAudio');
+        const musicProgress = document.getElementById('musicProgress');
+        const musicCurrent = document.getElementById('musicCurrent');
+        const musicDuration = document.getElementById('musicDuration');
+        const volumeSlider = document.getElementById('globalVolume');
+        const volumeIcon = document.getElementById('volumeIcon');
+        let lastVolume = 0.45;
+        backgroundAudio.volume = 0.45;
+
+        function formatTime(secs) {
+            if (!Number.isFinite(secs)) return "0:00";
+            const minutes = Math.floor(secs / 60);
+            const seconds = Math.floor(secs % 60).toString().padStart(2, "0");
+            return `${minutes}:${seconds}`;
+        }
+
+        function updateProgressVisual(value) {
+            musicProgress.style.setProperty('--progress', `${value}%`);
+        }
+
+        function syncVolumeIcon() {
+            volumeIcon.classList.toggle('muted', backgroundAudio.volume === 0);
+        }
+
+        function enterSite() {
+            if (hasEntered) return;
+            hasEntered = true;
+            enterOverlay.classList.add('hidden');
+            backgroundAudio.play().catch(err => console.log("Playback failed:", err));
+        }
+
+        enterOverlay.addEventListener('click', enterSite);
+
+        backgroundAudio.addEventListener('loadedmetadata', () => {
+            musicDuration.textContent = formatTime(backgroundAudio.duration);
+        });
+
+        backgroundAudio.addEventListener('timeupdate', () => {
+            if (!backgroundAudio.duration) return;
+            const value = (backgroundAudio.currentTime / backgroundAudio.duration) * 100;
+            musicProgress.value = value;
+            updateProgressVisual(value);
+            musicCurrent.textContent = formatTime(backgroundAudio.currentTime);
+            musicDuration.textContent = formatTime(backgroundAudio.duration);
+        });
+
+        musicProgress.addEventListener('input', () => {
+            if (!backgroundAudio.duration) return;
+            const value = Number(musicProgress.value);
+            backgroundAudio.currentTime = (value / 100) * backgroundAudio.duration;
+            updateProgressVisual(value);
+        });
+
+        volumeSlider.addEventListener('input', (e) => {
+            const value = Number(e.target.value);
+            backgroundAudio.volume = value;
+            if (value > 0) lastVolume = value;
+            syncVolumeIcon();
+        });
+
+        volumeIcon.addEventListener('click', () => {
+            if (backgroundAudio.volume > 0) {
+                lastVolume = backgroundAudio.volume;
+                backgroundAudio.volume = 0;
+                volumeSlider.value = 0;
+            } else {
+                backgroundAudio.volume = lastVolume || 0.45;
+                volumeSlider.value = backgroundAudio.volume;
+            }
+            syncVolumeIcon();
+        });
+
+        // --- PFP Uploader & Cropper ---
+        (function () {
+            const wrapper   = document.getElementById('avatarWrapper');
+            const avatarImg = document.getElementById('avatarImg');
+            const pfpInput  = document.getElementById('pfpInput');
+            const cropModal = document.getElementById('cropModal');
+            const cropWrap  = document.getElementById('cropWrap');
+            const cropCanvas = document.getElementById('cropCanvas');
+            const ctx       = cropCanvas.getContext('2d');
+            const zoomSlider = document.getElementById('cropZoom');
+            const btnCancel  = document.getElementById('cropCancel');
+            const btnConfirm = document.getElementById('cropConfirm');
+
+            let locked = false;
+            let img = null;
+            let zoom = 1, minZoom = 1;
+            let offsetX = 0, offsetY = 0;
+            let dragStartX, dragStartY, dragOriginX, dragOriginY, isDragging = false;
+            let wrapSize = 0;
+
+            // Restore saved PFP on page load
+            const STORAGE_KEY = 'pfp_data';
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                avatarImg.src = saved;
+                locked = true;
+                wrapper.classList.add('locked');
+                wrapper.style.cursor = 'default';
+                wrapper.title = '';
+            }
+
+            // Click on wrapper opens file picker (only if not locked)
+            wrapper.addEventListener('click', () => {
+                if (!locked) pfpInput.click();
+            });
+
+            pfpInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                pfpInput.value = ''; // reset so same file can be re-picked if cancelled
+                const reader = new FileReader();
+                reader.onload = (ev) => openCropper(ev.target.result);
+                reader.readAsDataURL(file);
+            });
+
+            function openCropper(src) {
+                img = new Image();
+                img.onload = () => {
+                    // Show modal FIRST so the browser computes layout, then read real dimensions
+                    cropModal.classList.remove('hidden');
+                    requestAnimationFrame(() => {
+                        wrapSize = cropWrap.getBoundingClientRect().width;
+                        if (!wrapSize) wrapSize = 300;
+
+                        cropCanvas.width  = wrapSize;
+                        cropCanvas.height = wrapSize;
+                        cropCanvas.style.width  = wrapSize + 'px';
+                        cropCanvas.style.height = wrapSize + 'px';
+
+                        // cover: image must fill the whole circle (no empty edges)
+                        const scaleW = wrapSize / img.naturalWidth;
+                        const scaleH = wrapSize / img.naturalHeight;
+                        minZoom = Math.max(scaleW, scaleH);
+                        zoom = minZoom;
+
+                        zoomSlider.min   = minZoom;
+                        zoomSlider.max   = minZoom * 4;
+                        zoomSlider.step  = 0.001;
+                        zoomSlider.value = zoom;
+
+                        // center
+                        offsetX = (wrapSize - img.naturalWidth  * zoom) / 2;
+                        offsetY = (wrapSize - img.naturalHeight * zoom) / 2;
+
+                        draw();
+                    });
+                };
+                img.src = src;
+            }
+
+            function clampOffsets() {
+                const sw = img.naturalWidth  * zoom;
+                const sh = img.naturalHeight * zoom;
+                // image must always cover the canvas fully — no empty edges allowed
+                if (sw >= wrapSize) {
+                    offsetX = Math.min(0, Math.max(wrapSize - sw, offsetX));
+                } else {
+                    offsetX = (wrapSize - sw) / 2;
+                }
+                if (sh >= wrapSize) {
+                    offsetY = Math.min(0, Math.max(wrapSize - sh, offsetY));
+                } else {
+                    offsetY = (wrapSize - sh) / 2;
+                }
+            }
+
+            function draw() {
+                if (!img) return;
+                ctx.clearRect(0, 0, wrapSize, wrapSize);
+                ctx.drawImage(img, offsetX, offsetY, img.naturalWidth * zoom, img.naturalHeight * zoom);
+            }
+
+            // Zoom slider
+            zoomSlider.addEventListener('input', () => {
+                const newZoom = parseFloat(zoomSlider.value);
+                // keep center point stable
+                const cx = wrapSize / 2, cy = wrapSize / 2;
+                offsetX = cx - (cx - offsetX) * (newZoom / zoom);
+                offsetY = cy - (cy - offsetY) * (newZoom / zoom);
+                zoom = newZoom;
+                clampOffsets();
+                draw();
+            });
+
+            // Mouse drag
+            cropWrap.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                dragStartX = e.clientX; dragStartY = e.clientY;
+                dragOriginX = offsetX; dragOriginY = offsetY;
+            });
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                offsetX = dragOriginX + (e.clientX - dragStartX);
+                offsetY = dragOriginY + (e.clientY - dragStartY);
+                clampOffsets();
+                draw();
+            });
+            window.addEventListener('mouseup', () => { isDragging = false; });
+
+            // Touch drag
+            let lastTouchDist = null;
+            cropWrap.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    isDragging = true;
+                    dragStartX = e.touches[0].clientX; dragStartY = e.touches[0].clientY;
+                    dragOriginX = offsetX; dragOriginY = offsetY;
+                } else if (e.touches.length === 2) {
+                    isDragging = false;
+                    lastTouchDist = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                }
+            }, { passive: true });
+            cropWrap.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                if (e.touches.length === 1 && isDragging) {
+                    offsetX = dragOriginX + (e.touches[0].clientX - dragStartX);
+                    offsetY = dragOriginY + (e.touches[0].clientY - dragStartY);
+                    clampOffsets(); draw();
+                } else if (e.touches.length === 2 && lastTouchDist !== null) {
+                    const dist = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    const factor = dist / lastTouchDist;
+                    lastTouchDist = dist;
+                    const newZoom = Math.min(Math.max(zoom * factor, parseFloat(zoomSlider.min)), parseFloat(zoomSlider.max));
+                    const cx = wrapSize / 2, cy = wrapSize / 2;
+                    offsetX = cx - (cx - offsetX) * (newZoom / zoom);
+                    offsetY = cy - (cy - offsetY) * (newZoom / zoom);
+                    zoom = newZoom;
+                    zoomSlider.value = zoom;
+                    clampOffsets(); draw();
+                }
+            }, { passive: false });
+            cropWrap.addEventListener('touchend', () => { isDragging = false; lastTouchDist = null; });
+
+            // Scroll to zoom (desktop)
+            cropWrap.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta   = -e.deltaY * 0.001 * zoom;
+                const newZoom = Math.min(Math.max(zoom + delta, parseFloat(zoomSlider.min)), parseFloat(zoomSlider.max));
+                const rect = cropWrap.getBoundingClientRect();
+                const px = e.clientX - rect.left, py = e.clientY - rect.top;
+                offsetX = px - (px - offsetX) * (newZoom / zoom);
+                offsetY = py - (py - offsetY) * (newZoom / zoom);
+                zoom = newZoom;
+                zoomSlider.value = zoom;
+                clampOffsets(); draw();
+            }, { passive: false });
+
+            // Cancel
+            btnCancel.addEventListener('click', () => {
+                cropModal.classList.add('hidden');
+                img = null;
+            });
+
+            // Confirm — export, apply, lock, persist
+            btnConfirm.addEventListener('click', () => {
+                const out = document.createElement('canvas');
+                out.width = out.height = 220;
+                const oc = out.getContext('2d');
+                const scale = 220 / wrapSize;
+                oc.drawImage(cropCanvas, 0, 0, wrapSize, wrapSize, 0, 0, 220, 220);
+
+                const dataUrl = out.toDataURL('image/png');
+                avatarImg.src = dataUrl;
+                cropModal.classList.add('hidden');
+                img = null;
+
+                // Persist to localStorage so it survives page reloads
+                try { localStorage.setItem(STORAGE_KEY, dataUrl); } catch (e) {}
+
+                // Lock: no more changes
+                locked = true;
+                wrapper.classList.add('locked');
+                wrapper.style.cursor = 'default';
+                wrapper.title = '';
+            });
+        })();
+
+        // --- Custom Cursor ---
+        (function () {
+            const dot  = document.getElementById('cursorDot');
+            const ring = document.getElementById('cursorRing');
+            let mouseX = -100, mouseY = -100;
+            let ringX  = -100, ringY  = -100;
+            let rafId;
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                dot.style.transform = `translate(calc(${mouseX}px - 50%), calc(${mouseY}px - 50%))`;
+            });
+
+            // Ring follows with smooth lerp
+            function animateRing() {
+                ringX += (mouseX - ringX) * 0.14;
+                ringY += (mouseY - ringY) * 0.14;
+                ring.style.transform = `translate(calc(${ringX}px - 50%), calc(${ringY}px - 50%))`;
+                rafId = requestAnimationFrame(animateRing);
+            }
+            animateRing();
+
+            // Hover state on interactive elements
+            const hoverTargets = 'a, button, input[type="range"], .avatar-wrapper:not(.locked), .volume-icon, .control-btn, .crop-btn';
+            document.addEventListener('mouseover', (e) => {
+                if (e.target.closest(hoverTargets)) document.body.classList.add('cursor-hover');
+            });
+            document.addEventListener('mouseout', (e) => {
+                if (e.target.closest(hoverTargets)) document.body.classList.remove('cursor-hover');
+            });
+
+            document.addEventListener('mousedown', () => document.body.classList.add('cursor-clicking'));
+            document.addEventListener('mouseup',   () => document.body.classList.remove('cursor-clicking'));
+
+            // Hide cursors when mouse leaves window
+            document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; ring.style.opacity = '0'; });
+            document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; ring.style.opacity = '1'; });
+        })();
+
+        // --- Typing Effect ---
+        (function () {
+            const USERNAME = 'IL DENTE PROIBITO';
+            const BIO      = 'Junior Web Developer | Gamer | Platinum+ Optimizer Web Dev';
+
+            const usernameEl = document.querySelector('.username');
+            const bioEl      = document.querySelector('.bio');
+
+            // Clear text and prepare cursor spans
+            usernameEl.textContent = '';
+            bioEl.textContent      = '';
+            const uCursor = document.createElement('span');
+            uCursor.className = 'typing-cursor';
+            const bCursor = document.createElement('span');
+            bCursor.className = 'typing-cursor';
+
+            function typeText(el, text, cursor, delay, speed, onDone) {
+                el.appendChild(cursor);
+                let i = 0;
+                setTimeout(() => {
+                    const iv = setInterval(() => {
+                        el.insertBefore(document.createTextNode(text[i]), cursor);
+                        i++;
+                        if (i >= text.length) {
+                            clearInterval(iv);
+                            // blink cursor briefly then fade it out
+                            setTimeout(() => {
+                                cursor.style.transition = 'opacity 0.4s ease';
+                                cursor.style.opacity = '0';
+                                setTimeout(() => cursor.remove(), 450);
+                            }, 900);
+                            if (onDone) onDone();
+                        }
+                    }, speed);
+                }, delay);
+            }
+
+            // Username types first, then bio starts
+            typeText(usernameEl, USERNAME, uCursor, 600,  75, null);
+            typeText(bioEl,      BIO,      bCursor, 600 + USERNAME.length * 75 + 300, 45, null);
+        })();
+
+        // --- Block Copy, Cut, Paste, Context Menu, Drag & Drop ---
+        (function () {
+            const block = (e) => e.preventDefault();
+            ['contextmenu','copy','cut','selectstart',
+             'dragstart','dragover','dragenter','dragleave','drop'
+            ].forEach(ev => document.addEventListener(ev, block, true));
+        })();
+
+        // --- Discord presence via Lanyard (RPC bridge) ---
+        (function () {
+            const DISCORD_USER_ID = '1233950558184800297';
+            const LANYARD_REST = `https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`;
+            const LANYARD_WS = 'wss://api.lanyard.rest/socket';
+
+            const card           = document.getElementById('nowPlaying');
+            const npLabel        = document.getElementById('npLabel');
+            const npGame         = document.getElementById('npGame');
+            const npSub          = document.getElementById('npSub');
+            const npElapsed      = document.getElementById('npElapsed');
+            const npIconWrap     = document.getElementById('npIconWrap');
+            const statusRing     = document.getElementById('discordStatusRing');
+            const avatarImg      = document.getElementById('avatarImg');
+            const DEFAULT_NP_SVG = npIconWrap.innerHTML;
+
+            const STATUS_LABEL = {
+                online: 'ONLINE',
+                idle: 'IDLE',
+                dnd: 'DO NOT DISTURB',
+                offline: 'OFFLINE'
+            };
+
+            let elapsedInterval = null;
+            let ws = null;
+            let heartbeatTimer = null;
+            let reconnectDelay = 2000;
+            let pfpLockedByUser = false;
+
+            try { pfpLockedByUser = !!localStorage.getItem('pfp_data'); } catch {}
+
+            function escapeHtml(str) {
+                return String(str ?? '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;');
+            }
+
+            function formatElapsed(ms) {
+                const s = Math.floor(ms / 1000);
+                const m = Math.floor(s / 60);
+                const h = Math.floor(m / 60);
+                if (h > 0) return `${h}h ${m % 60}m elapsed`;
+                if (m > 0) return `${m}m ${s % 60}s elapsed`;
+                return `${s}s elapsed`;
+            }
+
+            function clearTimers() {
+                clearInterval(elapsedInterval);
+                elapsedInterval = null;
+            }
+
+            function startElapsedTimer(fromMs) {
+                clearInterval(elapsedInterval);
+                if (!fromMs) {
+                    npElapsed.textContent = '';
+                    return;
+                }
+                elapsedInterval = setInterval(() => {
+                    npElapsed.textContent = formatElapsed(Date.now() - fromMs);
+                }, 1000);
+                npElapsed.textContent = formatElapsed(Date.now() - fromMs);
+            }
+
+            function setNpIcon(url, alt) {
+                if (url) {
+                    npIconWrap.innerHTML = `<img src="${escapeHtml(url)}" alt="${escapeHtml(alt || '')}" loading="lazy">`;
+                } else {
+                    npIconWrap.innerHTML = DEFAULT_NP_SVG;
+                }
+            }
+
+            function activityImage(activity) {
+                if (!activity?.assets?.large_image) return null;
+                const img = activity.assets.large_image;
+                if (img.startsWith('mp:external/')) {
+                    const parts = img.split('/');
+                    if (parts.length > 2) {
+                        return `https://${parts.slice(2).join('/')}`;
+                    }
+                    return null;
+                }
+                if (img.startsWith('spotify:')) return null;
+                if (activity.application_id) {
+                    return `https://cdn.discordapp.com/app-assets/${activity.application_id}/${img}.png`;
+                }
+                return null;
+            }
+
+            function discordAvatarUrl(user) {
+                if (user.avatar) {
+                    const ext = user.avatar.startsWith('a_') ? 'gif' : 'png';
+                    return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${ext}?size=256`;
+                }
+                const defaultIndex = user.discriminator && user.discriminator !== '0'
+                    ? Number(user.discriminator) % 5
+                    : Number((BigInt(user.id) >> 22n) % 6n);
+                return `https://cdn.discordapp.com/embed/avatars/${defaultIndex}.png`;
+            }
+
+            function customStatusText(activity) {
+                if (!activity) return '';
+                const emoji = activity.emoji;
+                const prefix = emoji
+                    ? (emoji.id
+                        ? `<img class="np-emoji" src="https://cdn.discordapp.com/emojis/${emoji.id}.${emoji.animated ? 'gif' : 'png'}" alt="">`
+                        : (emoji.name || ''))
+                    : '';
+                const state = activity.state || activity.name || '';
+                return `${prefix}${state}`.trim();
+            }
+
+            function findActivity(activities, type) {
+                return (activities || []).find((a) => a.type === type) || null;
+            }
+
+            function setStatusRing(status) {
+                statusRing.className = `discord-status-ring ${status || 'offline'}`;
+                statusRing.title = STATUS_LABEL[status] || 'Offline';
+            }
+
+            function setCardStatusClass(status) {
+                card.classList.remove('status-idle', 'status-dnd', 'status-offline', 'spotify-theme', 'idle');
+                if (status === 'idle') card.classList.add('status-idle');
+                else if (status === 'dnd') card.classList.add('status-dnd');
+                else if (status === 'offline') card.classList.add('status-offline');
+            }
+
+            function renderPresence(data) {
+                if (!data) return;
+
+                const status = data.discord_status || 'offline';
+                const user = data.discord_user;
+                const activities = data.activities || [];
+                const custom = findActivity(activities, 4);
+                const game = findActivity(activities, 0);
+                const spotify = data.listening_to_spotify ? data.spotify : null;
+
+                setStatusRing(status);
+                setCardStatusClass(status);
+                npLabel.textContent = STATUS_LABEL[status] || 'OFFLINE';
+
+                if (user && !pfpLockedByUser) {
+                    avatarImg.src = discordAvatarUrl(user);
+                    avatarImg.alt = user.global_name || user.username || 'Discord avatar';
+                }
+
+                if (spotify) {
+                    card.classList.remove('idle');
+                    card.classList.add('spotify-theme');
+                    npGame.textContent = spotify.song || 'Listening on Spotify';
+                    npSub.textContent = [spotify.artist, spotify.album].filter(Boolean).join(' · ');
+                    setNpIcon(spotify.album_art_url, spotify.album);
+                    startElapsedTimer(spotify.timestamps?.start);
+                    return;
+                }
+
+                card.classList.remove('spotify-theme');
+
+                if (game) {
+                    card.classList.remove('idle');
+                    npGame.textContent = game.name || 'Playing a game';
+                    const details = [game.details, game.state].filter(Boolean).join(' — ');
+                    npSub.textContent = details;
+                    if (custom) {
+                        const customLine = customStatusText(custom).replace(/<[^>]+>/g, '').trim();
+                        if (customLine) npSub.textContent = (npSub.textContent ? npSub.textContent + ' · ' : '') + customLine;
+                    }
+                    setNpIcon(activityImage(game), game.name);
+                    startElapsedTimer(game.timestamps?.start || game.created_at);
+                    return;
+                }
+
+                if (custom) {
+                    card.classList.remove('idle');
+                    npGame.innerHTML = customStatusText(custom) || 'Custom status';
+                    npSub.textContent = '';
+                    setNpIcon(null);
+                    startElapsedTimer(custom.created_at);
+                    npLabel.textContent = (STATUS_LABEL[status] || 'ONLINE') + ' · STATUS';
+                    return;
+                }
+
+                card.classList.add('idle');
+                npGame.textContent = status === 'offline'
+                    ? 'Non connesso a Discord'
+                    : 'Nessuna attività in corso';
+                npSub.textContent = custom ? customStatusText(custom).replace(/<[^>]+>/g, '') : '';
+                setNpIcon(null);
+                clearTimers();
+                npElapsed.textContent = '';
+            }
+
+            function renderNotOnLanyard() {
+                setStatusRing('offline');
+                setCardStatusClass('offline');
+                card.classList.add('idle');
+                card.classList.remove('spotify-theme');
+                npLabel.textContent = 'LANYARD';
+                npGame.textContent = 'Attiva Lanyard su Discord';
+                npSub.textContent = 'Installa l’app Lanyard e avvia Discord';
+                npElapsed.textContent = '';
+                setNpIcon(null);
+                clearTimers();
+            }
+
+            function handleLanyardPayload(payload) {
+                if (payload?.discord_user) {
+                    renderPresence(payload);
+                }
+            }
+
+            async function fetchInitial() {
+                try {
+                    const res = await fetch(LANYARD_REST);
+                    const json = await res.json();
+                    if (!json.success) {
+                        renderNotOnLanyard();
+                        return;
+                    }
+                    handleLanyardPayload(json.data);
+                } catch {
+                    npGame.textContent = 'Impossibile raggiungere Lanyard';
+                    npSub.textContent = 'Controlla la connessione';
+                }
+            }
+
+            function connectWebSocket() {
+                if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
+
+                clearInterval(heartbeatTimer);
+                ws = new WebSocket(LANYARD_WS);
+
+                ws.addEventListener('message', (event) => {
+                    let msg;
+                    try { msg = JSON.parse(event.data); } catch { return; }
+
+                    if (msg.op === 1) {
+                        reconnectDelay = 2000;
+                        clearInterval(heartbeatTimer);
+                        heartbeatTimer = setInterval(() => {
+                            if (ws?.readyState === WebSocket.OPEN) {
+                                ws.send(JSON.stringify({ op: 3 }));
+                            }
+                        }, msg.d.heartbeat_interval);
+
+                        ws.send(JSON.stringify({
+                            op: 2,
+                            d: { subscribe_to_id: DISCORD_USER_ID }
+                        }));
+                        return;
+                    }
+
+                    if (msg.op === 0 && (msg.t === 'INIT' || msg.t === 'PRESENCE_UPDATE')) {
+                        handleLanyardPayload(msg.d);
+                    }
+                });
+
+                ws.addEventListener('close', () => {
+                    clearInterval(heartbeatTimer);
+                    ws = null;
+                    setTimeout(connectWebSocket, reconnectDelay);
+                    reconnectDelay = Math.min(reconnectDelay * 1.5, 30000);
+                });
+
+                ws.addEventListener('error', () => {
+                    ws?.close();
+                });
+            }
+
+            fetchInitial();
+            connectWebSocket();
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') fetchInitial();
+            });
+        })();
+
+        // --- Visitatori unici (Cloudflare Pages + KV) ---
+        (function () {
+            const API = 'const API = 'https://visitor-counter.mikimiki-dm68.workers.dev';
+            const POLL_MS = 2000;
+            const STORAGE_KEY = 'site_visitor_id';
+
+            const cardEl = document.getElementById('visitorLive');
+            const countEl = document.getElementById('visitorCount');
+            const subEl = document.getElementById('visitorSub');
+            const badgeEl = document.getElementById('visitorBadge');
+
+            let lastTotal = null;
+            let registerSent = false;
+            let pollTimer = null;
+
+            function getVisitorId() {
+                let id = localStorage.getItem(STORAGE_KEY);
+                if (!id) {
+                    id = (crypto.randomUUID && crypto.randomUUID()) ||
+                        `v-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+                    localStorage.setItem(STORAGE_KEY, id);
+                }
+                return id;
+            }
+
+            function visitorLabel(total) {
+                return total === 1
+                    ? '1 persona ha visitato il sito'
+                    : `${total.toLocaleString('it-IT')} persone hanno visitato il sito`;
+            }
+
+            function showError(message) {
+                cardEl.classList.add('offline');
+                badgeEl.textContent = 'Offline';
+                subEl.textContent = message;
+            }
+
+            function renderCount(total, live) {
+                const safeTotal = Number.isFinite(total) ? Math.max(0, total) : 0;
+                const changed = lastTotal !== null && lastTotal !== safeTotal;
+                lastTotal = safeTotal;
+
+                countEl.textContent = String(safeTotal);
+                subEl.textContent = visitorLabel(safeTotal);
+
+                if (changed) {
+                    countEl.classList.remove('count-bump');
+                    void countEl.offsetWidth;
+                    countEl.classList.add('count-bump');
+                }
+
+                cardEl.classList.toggle('offline', !live);
+                badgeEl.textContent = live ? 'Live' : 'Setup';
+            }
+
+            async function readApi(res) {
+                const type = res.headers.get('content-type') || '';
+                if (!type.includes('application/json')) {
+                    throw new Error('api_missing');
+                }
+                return res.json();
+            }
+
+            async function diagnoseApi() {
+                try {
+                    const health = await fetch('/api/health', { cache: 'no-store' });
+                    const type = health.headers.get('content-type') || '';
+                    return type.includes('application/json');
+                } catch {
+                    return false;
+                }
+            }
+
+            async function registerVisit() {
+                if (registerSent) return;
+                registerSent = true;
+
+                try {
+                    const res = await fetch(API, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ visitorId: getVisitorId() }),
+                        keepalive: true
+                    });
+                    const data = await readApi(res);
+                    if (!res.ok) throw new Error('register_failed');
+                    if (data.configured === false) {
+                        renderCount(0, false);
+                        showError('Collega KV VISITOR_STORE su Cloudflare Pages');
+                        return;
+                    }
+                    renderCount(data.total, true);
+                } catch (err) {
+                    if (err.message === 'api_missing') {
+                        const ok = await diagnoseApi();
+                        showError(ok
+                            ? 'API ok ma visitors non risponde — controlla KV'
+                            : 'Carica _routes.json + functions/ e rideploya su Cloudflare');
+                    }
+                }
+            }
+
+            async function fetchCount() {
+                try {
+                    const res = await fetch(API, { cache: 'no-store' });
+                    const data = await readApi(res);
+                    if (!res.ok) throw new Error('fetch_failed');
+                    if (data.configured === false) {
+                        renderCount(0, false);
+                        showError('Cloudflare: aggiungi binding KV → VISITOR_STORE');
+                        return;
+                    }
+                    renderCount(data.total, true);
+                } catch (err) {
+                    if (err.message === 'api_missing') {
+                        const ok = await diagnoseApi();
+                        showError(ok
+                            ? 'API attiva — collega KV VISITOR_STORE su Cloudflare'
+                            : 'API non attiva: carica _routes.json e rideploya');
+                    } else {
+                        showError('Contatore temporaneamente non disponibile');
+                    }
+                }
+            }
+
+            function startPolling() {
+                clearInterval(pollTimer);
+                pollTimer = setInterval(fetchCount, POLL_MS);
+            }
+
+            registerVisit().then(() => {
+                fetchCount();
+                startPolling();
+            });
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') fetchCount();
+            });
+        })();
+
+        updateProgressVisual(0);
+        syncVolumeIcon();
+    </script>
+</body>
+</html>
