@@ -191,7 +191,6 @@ A typical structure looks like this:
 ├── background.mp4
 ├── music.mp3
 ├── music.jpg
-├── profile-card.png
 ├── pfp.png
 ├── favicon.ico
 └── README.md
@@ -203,8 +202,7 @@ A typical structure looks like this:
 - `background.mp4` — the looping full-screen background video.
 - `music.mp3` — the soundtrack played by the embedded audio player.
 - `music.jpg` — cover art for the music card.
-- `profile-card.png` — primary avatar image used by default.
-- `pfp.png` — fallback avatar image if the primary image is unavailable.
+- `pfp.png` — fallback avatar image.
 - `favicon.ico` — browser tab icon.
 
 ---
