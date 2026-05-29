@@ -1,7 +1,6 @@
 # IL DENTE PROIBITO — Advanced Glassmorphic Presence Card
 
 <div align="center">
-  <img src="profile-card.png" alt="IL DENTE PROIBITO Banner" width="200" style="border-radius: 50%; box-shadow: 0 0 24px rgba(78, 227, 255, 0.36); border: 2px solid rgba(188, 241, 255, 0.72);" />
   <p align="center">
     <strong>A high-end, ultra-optimized personal bio link card featuring real-time presence injection and extreme frontend tuning.</strong>
   </p>
