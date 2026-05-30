@@ -189,10 +189,24 @@ A typical structure looks like this:
 .
 ├── index.html
 ├── background.mp4
-├── music.mp3
 ├── music.jpg
 ├── pfp.png
 ├── favicon.ico
+│
+├── Covers/
+│   ├── 01-montagem-favela.jpg
+│   ├── 02-me-lleva-volver.jpg
+│   └── 03-montagem-plutao.jpg
+│
+├── Functions/
+│   ├── health.js
+│   └── visitors.js
+│
+├── Playlist/
+│   ├── 01-montagem-favela.mp3
+│   ├── 02-me-lleva-volver.mp3
+│   └── 03-montagem-plutao.mp3
+│
 └── README.md
 ```
 
@@ -200,10 +214,32 @@ A typical structure looks like this:
 
 - `index.html` — the complete application shell, styling, and client-side logic.
 - `background.mp4` — the looping full-screen background video.
-- `music.mp3` — the soundtrack played by the embedded audio player.
-- `music.jpg` — cover art for the music card.
+- `music.jpg` — default artwork used by the integrated music player.
 - `pfp.png` — fallback avatar image.
 - `favicon.ico` — browser tab icon.
+
+#### Covers/
+
+Cover artwork used by the music system.
+
+- `01-montagem-favela.jpg`
+- `02-me-lleva-volver.jpg`
+- `03-montagem-plutao.jpg`
+
+#### Functions/
+
+Utility scripts that extend the website functionality.
+
+- `health.js` — health and status endpoint logic.
+- `visitors.js` — visitor analytics and tracking logic.
+
+#### Playlist/
+
+Audio tracks available through the integrated music player.
+
+- `01-montagem-favela.mp3`
+- `02-me-lleva-volver.mp3`
+- `03-montagem-plutao.mp3`
 
 ---
 
