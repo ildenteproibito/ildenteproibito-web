@@ -218,7 +218,7 @@ A typical structure looks like this:
 - `pfp.png` — fallback avatar image.
 - `favicon.ico` — browser tab icon.
 
-#### Covers/
+#### Covers
 
 Cover artwork used by the music system.
 
@@ -226,14 +226,14 @@ Cover artwork used by the music system.
 - `02-me-lleva-volver.jpg`
 - `03-montagem-plutao.jpg`
 
-#### Functions/
+#### Functions
 
 Utility scripts that extend the website functionality.
 
 - `health.js` — health and status endpoint logic.
 - `visitors.js` — visitor analytics and tracking logic.
 
-#### Playlist/
+#### Playlist
 
 Audio tracks available through the integrated music player.
 
