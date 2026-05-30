@@ -193,16 +193,16 @@ A typical structure looks like this:
 ├── pfp.png
 ├── favicon.ico
 │
-├── Covers/
+├── Covers
 │   ├── 01-montagem-favela.jpg
 │   ├── 02-me-lleva-volver.jpg
 │   └── 03-montagem-plutao.jpg
 │
-├── Functions/
+├── Functions
 │   ├── health.js
 │   └── visitors.js
 │
-├── Playlist/
+├── Playlist
 │   ├── 01-montagem-favela.mp3
 │   ├── 02-me-lleva-volver.mp3
 │   └── 03-montagem-plutao.mp3
