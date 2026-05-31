@@ -147,6 +147,7 @@ The project deliberately limits unwanted text selection, dragging, copying, and 
 The app is a single-page static experience. There is no framework, routing layer, or build pipeline required for the core functionality.
 
 ### Rendering model
+
 The page is composed of a handful of layered elements:
 
 - a fixed media background,
@@ -158,6 +159,7 @@ The page is composed of a handful of layered elements:
 - and several client-side interaction helpers.
 
 ### State management
+
 The script uses plain JavaScript and browser APIs to manage runtime state:
 
 - `localStorage` remembers the chosen avatar,
@@ -167,6 +169,7 @@ The script uses plain JavaScript and browser APIs to manage runtime state:
 - and DOM updates are handled directly for responsiveness and simplicity.
 
 ### Presence logic
+
 The Discord presence system queries Lanyard and then updates the presence card based on available activity data. Depending on the user’s state, the page can show:
 
 - Spotify activity,
@@ -175,6 +178,7 @@ The Discord presence system queries Lanyard and then updates the presence card b
 - or an offline / idle fallback.
 
 ### Avatar logic
+
 When the user uploads an image, the cropper creates a square export from the circular preview area. The result is saved locally, applied immediately, and locked to avoid accidental replacement.
 
 ---
@@ -206,6 +210,9 @@ A typical structure looks like this:
 │   ├── 01-montagem-favela.mp3
 │   ├── 02-me-lleva-volver.mp3
 │   └── 03-montagem-plutao.mp3
+│
+├── assets
+│   └── og-image.png
 │
 └── README.md
 ```
@@ -259,6 +266,7 @@ python -m http.server 8000
 ```
 
 Then open:
+
 ```text
 http://localhost:8000
 ```
@@ -389,107 +397,4 @@ This project is intentionally lightweight at the architectural level, but visual
 - Media elements are used purposefully rather than everywhere.
 
 ### Trade-offs
-The page is animated and media-heavy by design. That means the visual experience depends on a device that can comfortably handle:
-
-- a looping background video,
-- audio playback,
-- blur effects,
-- and multiple concurrent UI animations.
-
-### Practical recommendation
-For the smoothest result, test the page on a device with:
-
-- a modern GPU,
-- stable network access for presence services,
-- and a current browser build.
-
----
-
-## Privacy and Data Handling
-
-The project includes a few browser-side persistence behaviors that are worth understanding.
-
-### Local avatar persistence
-When a custom avatar is confirmed, the result is stored in `localStorage` under a browser-specific key. This means:
-
-- the image survives reloads,
-- the state does not depend on a backend,
-- and the selection is only available in the same browser profile.
-
-### Presence data
-Discord presence data is fetched through Lanyard. The page consumes that data to display status and activity, but it does not implement its own authentication flow.
-
-### No server-side user profile
-The repository is a static front-end project, so the experience is driven by client-side rendering and external public APIs rather than a custom account system.
-
----
-
-## Troubleshooting
-
-### Audio does not start
-Modern browsers block autoplay until the user interacts with the page. Click anywhere on the enter overlay first.
-
-### Discord presence is not visible
-Check the following:
-
-- the Lanyard service is reachable,
-- the configured Discord user ID is correct,
-- the browser is online,
-- and the user account is available through Lanyard.
-
-### Avatar cropper looks wrong
-Make sure the uploaded image is large enough and centered appropriately. Use drag and zoom to reposition the subject before confirming.
-
-### Background video is missing
-Verify that the media file exists and that the filename matches the path referenced by the page.
-
-### Custom avatar is stuck
-This is expected after confirmation. The avatar is intentionally locked to preserve the saved choice. Clear the browser’s local storage for the site to reset it.
-
-### Cursor appears inconsistent on mobile
-The custom pointer system is primarily optimized for desktop-style pointer input. Touch devices may not reproduce the exact same effect.
-
----
-
-## Roadmap
-
-Possible future improvements could include:
-
-- a settings drawer for quick personalization,
-- theme presets,
-- a richer mobile layout,
-- an admin panel for editable text blocks,
-- more granular media controls,
-- additional social integrations,
-- and optional fallback states when external services are unavailable.
-
-The current implementation already provides a strong identity experience, so the next step is mainly refinement and modularization rather than feature bloat.
-
----
-
-## Contributing
-
-This repository is small enough that contributions should stay disciplined and intentional.
-
-When proposing changes, keep the following principles in mind:
-
-- preserve the high-end visual style,
-- avoid unnecessary dependencies,
-- keep interactions smooth and readable,
-- and favor clarity over novelty.
-
-Good contributions are the ones that make the page more polished, more maintainable, or more resilient without diluting its visual identity.
-
----
-
-## License
-
-No license file is currently defined in this repository. If you plan to make the project public for reuse, add an explicit license so the usage terms are clear.
-
----
-
-## Final Notes
-
-This project is built as a statement piece: compact, atmospheric, and strongly branded. It is not trying to be a generic template. It is trying to feel like a personal presence surface with a distinct visual language.
-
-That combination of minimal structure and rich interaction is exactly what gives the page its identity.
+The page is animated and media-heavy by design. That...
