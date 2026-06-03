@@ -39,7 +39,7 @@
 
 ## Overview
 
-This repository contains a compact, framework-free personal web presence designed to make an immediate visual impression. The page is built around a centered glass card layered over a full-screen background video, with a small but dense set of interactive components that make the page feel alive rather than static.
+This repository contains a compact, framework-free personal web presence designed to make an immediate visual impression. The page is built around a centered glass card layered over a full-screen [...]
 
 The experience is intentionally opinionated:
 
@@ -90,7 +90,7 @@ This structure keeps the page visually clear while still feeling rich and animat
 ## Core Features
 
 ### 1. Glassmorphic central card
-The entire interface is organized around a centered glass card with backdrop blur, soft borders, layered shadows, and high-contrast typography. The card acts as the visual anchor of the page and keeps the content readable even with a dynamic background.
+The entire interface is organized around a centered glass card with backdrop blur, soft borders, layered shadows, and high-contrast typography. The card acts as the visual anchor of the page and k[...]
 
 ### 2. Full-screen cinematic background
 A looping background video creates the visual atmosphere of the page. The background is treated as a foundational design layer rather than a decorative extra.
@@ -129,7 +129,7 @@ The avatar area is interactive and can accept a user image. The cropper supports
 Once a custom avatar is confirmed, the page locks it to preserve the selected identity state.
 
 ### 7. Custom cursor system
-The default pointer is replaced by a two-layer cursor composed of a dot and a trailing ring. The pointer reacts to hover and click states and is designed to reinforce the page’s futuristic visual tone.
+The default pointer is replaced by a two-layer cursor composed of a dot and a trailing ring. The pointer reacts to hover and click states and is designed to reinforce the page's futuristic visu[...]
 
 ### 8. Typing animation
 The username and bio are revealed through a typing effect, which creates a controlled entrance for the identity block and avoids a hard static render.
@@ -170,7 +170,7 @@ The script uses plain JavaScript and browser APIs to manage runtime state:
 
 ### Presence logic
 
-The Discord presence system queries Lanyard and then updates the presence card based on available activity data. Depending on the user’s state, the page can show:
+The Discord presence system queries Lanyard and then updates the presence card based on available activity data. Depending on the user's state, the page can show:
 
 - Spotify activity,
 - game activity,
@@ -185,9 +185,7 @@ When the user uploads an image, the cropper creates a square export from the cir
 
 ## Project Structure
 
-The repository is intentionally compact. The main runtime is concentrated in a single HTML document with embedded CSS and JavaScript.
-
-A typical structure looks like this:
+The repository is organized into modular directories for enhanced maintainability and scalability. The main runtime is concentrated in a single HTML document with embedded CSS and JavaScript, with support files organized as follows:
 
 ```text
 .
@@ -197,22 +195,30 @@ A typical structure looks like this:
 ├── pfp.png
 ├── favicon.ico
 │
-├── Covers
+├── assets/
+│   └── og-image.png
+│
+├── functions/
+│   ├── health.js
+│   └── visitors.js
+│
+├── src/
+│   ├── components/
+│   │   └── index.ts
+│   ├── lib/
+│   │   └── index.ts
+│   └── types/
+│       └── index.ts
+│
+├── Covers/
 │   ├── 01-montagem-favela.jpg
 │   ├── 02-me-lleva-volver.jpg
 │   └── 03-montagem-plutao.jpg
 │
-├── Functions
-│   ├── health.js
-│   └── visitors.js
-│
-├── Playlist
+├── Playlist/
 │   ├── 01-montagem-favela.mp3
 │   ├── 02-me-lleva-volver.mp3
 │   └── 03-montagem-plutao.mp3
-│
-├── assets
-│   └── og-image.png
 │
 └── README.md
 ```
@@ -225,7 +231,39 @@ A typical structure looks like this:
 - `pfp.png` — fallback avatar image.
 - `favicon.ico` — browser tab icon.
 
-#### Covers
+#### assets/
+
+Static assets used across the project.
+
+- `og-image.png` — Open Graph image for social media previews.
+
+#### functions/
+
+Utility scripts that extend the website functionality.
+
+- `health.js` — health and status endpoint logic.
+- `visitors.js` — visitor analytics and tracking logic.
+
+#### src/
+
+Modular source code structure for TypeScript components, utilities, and type definitions.
+
+##### src/components/
+
+Reusable component modules and UI building blocks.
+Add component implementations here for better code organization.
+
+##### src/lib/
+
+Library utilities, helper functions, and shared business logic.
+Centralized location for utility functions and utility classes.
+
+##### src/types/
+
+TypeScript type definitions and interfaces.
+Centralized location for all type definitions and interfaces.
+
+#### Covers/
 
 Cover artwork used by the music system.
 
@@ -233,14 +271,7 @@ Cover artwork used by the music system.
 - `02-me-lleva-volver.jpg`
 - `03-montagem-plutao.jpg`
 
-#### Functions
-
-Utility scripts that extend the website functionality.
-
-- `health.js` — health and status endpoint logic.
-- `visitors.js` — visitor analytics and tracking logic.
-
-#### Playlist
+#### Playlist/
 
 Audio tracks available through the integrated music player.
 
