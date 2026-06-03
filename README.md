@@ -185,7 +185,7 @@ When the user uploads an image, the cropper creates a square export from the cir
 
 ## Project Structure
 
-The repository is organized into modular directories for enhanced maintainability and scalability. The main runtime is concentrated in a single HTML document with embedded CSS and JavaScript, with support files organized as follows:
+The repository is organized into modular directories for enhanced maintainability and scalability. The structure follows a modern TypeScript-based architecture with component-driven organization.
 
 ```text
 .
@@ -203,22 +203,25 @@ The repository is organized into modular directories for enhanced maintainabilit
 │   └── visitors.js
 │
 ├── src/
+│   ├── app/
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   │
 │   ├── components/
-│   │   └── index.ts
+│   │   ├── BackgroundWallpaper.tsx
+│   │   ├── DiscordStatus.tsx
+│   │   ├── ProfileHeader.tsx
+│   │   ├── SocialLinks.tsx
+│   │   ├── VisitorCounter.tsx
+│   │   └── YoutubeAudioPlayer.tsx
+│   │
 │   ├── lib/
-│   │   └── index.ts
+│   │   ├── cloudflare.ts
+│   │   └── utils.ts
+│   │
 │   └── types/
 │       └── index.ts
-│
-├── Covers/
-│   ├── 01-montagem-favela.jpg
-│   ├── 02-me-lleva-volver.jpg
-│   └── 03-montagem-plutao.jpg
-│
-├── Playlist/
-│   ├── 01-montagem-favela.mp3
-│   ├── 02-me-lleva-volver.mp3
-│   └── 03-montagem-plutao.mp3
 │
 └── README.md
 ```
@@ -248,36 +251,37 @@ Utility scripts that extend the website functionality.
 
 Modular source code structure for TypeScript components, utilities, and type definitions.
 
+##### src/app/
+
+Application-level configuration and entry points.
+
+- `globals.css` — global styles and CSS resets applied across the entire application.
+- `layout.tsx` — root layout component defining the overall page structure.
+- `page.tsx` — main page component and primary entry point.
+
 ##### src/components/
 
-Reusable component modules and UI building blocks.
-Add component implementations here for better code organization.
+Reusable React/TypeScript components that compose the UI.
+
+- `BackgroundWallpaper.tsx` — manages the full-screen cinematic background video rendering.
+- `DiscordStatus.tsx` — displays Discord presence status powered by Lanyard API.
+- `ProfileHeader.tsx` — renders the main identity block with username, bio, and avatar.
+- `SocialLinks.tsx` — presents social media links with icons and hover tooltips.
+- `VisitorCounter.tsx` — tracks and displays visitor analytics.
+- `YoutubeAudioPlayer.tsx` — custom audio player with controls and progress tracking.
 
 ##### src/lib/
 
-Library utilities, helper functions, and shared business logic.
-Centralized location for utility functions and utility classes.
+Shared utility functions, helpers, and business logic.
+
+- `cloudflare.ts` — Cloudflare API integration and helper functions.
+- `utils.ts` — general-purpose utility functions for common operations.
 
 ##### src/types/
 
-TypeScript type definitions and interfaces.
-Centralized location for all type definitions and interfaces.
+TypeScript type definitions, interfaces, and type exports.
 
-#### Covers/
-
-Cover artwork used by the music system.
-
-- `01-montagem-favela.jpg`
-- `02-me-lleva-volver.jpg`
-- `03-montagem-plutao.jpg`
-
-#### Playlist/
-
-Audio tracks available through the integrated music player.
-
-- `01-montagem-favela.mp3`
-- `02-me-lleva-volver.mp3`
-- `03-montagem-plutao.mp3`
+- `index.ts` — centralized type definitions and interfaces for the entire application.
 
 ---
 
