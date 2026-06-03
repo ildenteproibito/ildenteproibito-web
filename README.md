@@ -189,9 +189,7 @@ The repository is organized into modular directories for enhanced maintainabilit
 
 ```text
 .
-├── index.html
 ├── background.mp4
-├── music.jpg
 ├── pfp.png
 ├── favicon.ico
 │
@@ -228,9 +226,7 @@ The repository is organized into modular directories for enhanced maintainabilit
 
 ### File roles
 
-- `index.html` — the complete application shell, styling, and client-side logic.
 - `background.mp4` — the looping full-screen background video.
-- `music.jpg` — default artwork used by the integrated music player.
 - `pfp.png` — fallback avatar image.
 - `favicon.ico` — browser tab icon.
 
