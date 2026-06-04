@@ -197,7 +197,6 @@ The repository is organized into modular directories for enhanced maintainabilit
 │   └── visitors.js
 │
 ├── public/
-│   ├── background.mp4
 │   ├── favicon.ico
 │   ├── icona-evento.png
 │   ├── pfp.png
@@ -248,7 +247,6 @@ Utility scripts that extend the website functionality.
 
 Publicly accessible media files and static resources.
 
-- `background.mp4` — the looping full-screen background video.
 - `favicon.ico` — browser tab icon.
 - `icona-evento.png` — event icon asset.
 - `pfp.png` — fallback avatar/profile picture image.
@@ -257,7 +255,7 @@ Publicly accessible media files and static resources.
 
 Collection of wallpaper and background media assets.
 
-- `background.mp4` — additional background video variant.
+- `background.mp4` — looping full-screen background video.
 
 #### src/
 
