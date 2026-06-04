@@ -189,16 +189,21 @@ The repository is organized into modular directories for enhanced maintainabilit
 
 ```text
 .
-├── background.mp4
-├── pfp.png
-├── favicon.ico
-│
 ├── assets/
 │   └── og-image.png
 │
 ├── functions/
 │   ├── health.js
 │   └── visitors.js
+│
+├── public/
+│   ├── background.mp4
+│   ├── favicon.ico
+│   ├── icona-evento.png
+│   ├── pfp.png
+│   │
+│   └── wallpapers/
+│       └── background.mp4
 │
 ├── src/
 │   ├── app/
@@ -226,10 +231,6 @@ The repository is organized into modular directories for enhanced maintainabilit
 
 ### File roles
 
-- `background.mp4` — the looping full-screen background video.
-- `pfp.png` — fallback avatar image.
-- `favicon.ico` — browser tab icon.
-
 #### assets/
 
 Static assets used across the project.
@@ -242,6 +243,21 @@ Utility scripts that extend the website functionality.
 
 - `health.js` — health and status endpoint logic.
 - `visitors.js` — visitor analytics and tracking logic.
+
+#### public/
+
+Publicly accessible media files and static resources.
+
+- `background.mp4` — the looping full-screen background video.
+- `favicon.ico` — browser tab icon.
+- `icona-evento.png` — event icon asset.
+- `pfp.png` — fallback avatar/profile picture image.
+
+##### public/wallpapers/
+
+Collection of wallpaper and background media assets.
+
+- `background.mp4` — additional background video variant.
 
 #### src/
 
