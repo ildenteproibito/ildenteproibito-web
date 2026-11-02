@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://i.ibb.co/SDR3Pp3v/upscalemedia-transformed-modified.png" alt="IL DENTE PROIBITO" width="100">
+<img src="https://i.ibb.co/5WX0hw2V/compress-O-ghostface-cerchio-completo.png" alt="IL DENTE PROIBITO" width="100">
 
 # IL DENTE PROIBITO
 
